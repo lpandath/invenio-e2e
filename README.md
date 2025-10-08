@@ -1,78 +1,83 @@
-# Demo of Invenio E2E tests for TU Graz
+# E2E Testing Framework for Invenio
 
-## Installation (when `@inveniosoftware/invenio-e2e` goes public)
+**Note:** This is a suggestion only; it might be changed or abandoned at any time.
 
-```bash
-npm install
+## How to Try It Out
+
+### Directory Structure
+
+At the beginning, you have just your repository:
+
+```text
+parent-directory
+  +-- <my-repository>
+        +-- site
 ```
 
-## Current Installation
+You will need to change it to the following structure:
 
-```bash
-
-gh repo clone oarepo/invenio-e2e
-gh repo clone mesemus/tugraz-demo
-
-# this one is required for local installation of invenio-e2e
-export NODE_PRESERVE_SYMLINKS=1
-
-cd invenio-e2e
-npm install
-npm run build
-cd ..
-
-cd tugraz-demo
-npm install
+```text
+parent-directory
+  +-- <my-repository>
+         +-- e2e
+         +-- site
+  +-- invenio-e2e
+         +-- ...
+  +-- pnpm-workspace.yaml
 ```
 
-## Running the tests
+### Steps
 
-```bash
-npx playwright test
-```
+1. Create a `pnpm-workspace.yaml` file in parent directory:
 
-## Customizing the tests
+    ```yaml
+    # pnpm-workspace.yaml
+    packages:
+      - <my-repository>/e2e
+      - invenio-e2e
+    ```
 
-### Customizing UI locators
+2. Clone the `invenio-e2e` repository from GitHub:
 
-The locators used in the tests can be customized by modifying the default ones provided by the `@inveniosoftware/invenio-e2e` package. To do so, look at the [`locators/index.ts`](./locators/index.ts) file.
+    ```bash
+    gh repo clone oarepo/invenio-e2e
+    # Switch to a feature branch if needed
+    ```
 
-You need to customize the locators if you modified the UI templates of Invenio RDM in a way that the locators used in the tests do not match anymore.
+3. Create the `e2e` directory inside your repository:
 
-After modifications, you need to add the locator to the fixtures in the [`fixtures/index.ts`](./fixtures/index.ts) file, so that the tests can use them.
+    ```bash
+    gh repo clone mesemus/sample-e2e-repository temp-repository
+    mv temp-repository/e2e <my-repository>/e2e
+    rm -rf temp-repository
+    ```
 
-### Running the default tests
+4. Install dependencies:
 
-To run the default tests provided by the `@inveniosoftware/invenio-e2e` package, just run the `npx playwright test` command as usual, no need to specify any test files.
+    ```bash
+    cd <my-repository>/e2e
+    pnpm install
+    ```
 
-### Adding new tests
+5. Configure environment variables:
 
-Add your tests inside the `tests` directory as you would normally do. Inside the tests you can use the fixtures provided by the `@inveniosoftware/invenio-e2e` package, as well as the custom fixtures defined in the `fixtures/index.ts` file.
+    You will need a test user that can deposit records in your InvenioRDM instance.
 
-List of provided fixtures (for full list, refer to the documentation of the `@inveniosoftware/invenio-e2e` package):
+    ```bash
+    export INVENIO_USER_EMAIL=...
+    export INVENIO_USER_PASSWORD=...
+    ```
 
-| Fixture Name | Description |
-|--------------|-------------|
-| `page` | The Playwright page object. |
-| `basePageLocators` | The base locators used in the tests. |
-| `homePageLocators` | The locators for the home page. |
-| `homePage` | The home page object. |
-| `searchPage` | The search page object. |
-| `availablePages` | An object to store the available page objects. |
+6. Run your server in another terminal:
 
+    ```bash
+    cd <my-repository>
+    invenio-cli run
+    ```
 
-### Selecting the tests to be run
+7. Run tests:
 
-TODO: You can select subset of the tests provided by @inveniosoftware/invenio-e2e by passing the 'skip' parameter to the `homepageTests` or `communityTests` functions inside the [`tests/invenio.spec.ts`](./tests/invenio.spec.ts) file. For example:
-
-```typescript
-homepageTests(test, { skip: ['search', 'browse'] });
-```
-
-### Customizing playwright page objects
-
-You can extend the provided page objects from the `@inveniosoftware/invenio-e2e` package by creating your own page objects that extend the provided ones. For example, you can create a new page object that extends the `HomePage` class and adds custom methods or locators.
-
-Do not forget to add your custom page object to the fixtures in the `fixtures/index.ts` file, so that the tests can use it.
-
-This page will replace the default page and even the default tests inside the `@inveniosoftware/invenio-e2e` package will use it.
+    ```bash
+    cd <my-repository>/e2e
+    npx playwright test
+    ```

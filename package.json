@@ -1,18 +1,41 @@
 {
-  "name": "datarepo",
+  "name": "@inveniosoftware/invenio-e2e",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {},
+  "description": "E2E Testing Framework for Invenio",
+  "main": "src/index.ts",
+  "types": "src/index.d.ts",
+  "scripts": {
+    "build": "tsc; cat package.json | sed 's@dist/index.ts@dist/index.js@' > dist/package.json; cp -r scripts dist/",
+    "docs": "documentation build src/**/*.ts -f md -o api_docs.md --shallow --github --sort-order kind",
+    "collect-translations": "node scripts/collect-translations.js",
+    "collect-translations:validate": "node scripts/collect-translations.js --validate",
+    "generate-pot": "node scripts/generate-pot.js",
+    "i18n:validate": "npm run generate-pot && npm run collect-translations:validate"
+  },
+  "bin": {
+    "invenio-e2e-collect-translations": "scripts/collect-translations.js",
+    "invenio-e2e-generate-pot": "scripts/generate-pot.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.54.1",
-    "@types/node": "^24.0.13",
-    "ts-deepmerge": "^7.0.3"
+    "@eslint/js": "^9.36.0",
+    "@types/i18next": "^12.1.0",
+    "@types/node": "^24.3.1",
+    "documentation": "^14.0.3",
+    "eslint": "^9.36.0",
+    "playwright-qase-reporter": "^2.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.44.1"
   },
-  "dependencies": {
-    "@inveniosoftware/invenio-e2e": "file:../invenio-e2e/dist"
+  "peerDependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@playwright/test": "^1.54.1",
+    "dotenv": "^17.0.0",
+    "i18next": "^25.0.0",
+    "i18next-conv": "^15.0.0",
+    "ts-deepmerge": "^7.0.3"
   }
 }

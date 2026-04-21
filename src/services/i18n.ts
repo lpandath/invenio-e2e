@@ -235,7 +235,7 @@ export class I18nService<L extends Locators> implements I18nServiceInterface {
           pass,
         };
       },
-    }) as Expect<T & I18nExpected>;
+    });
   }
   /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-object-type, @typescript-eslint/no-this-alias */
 }
